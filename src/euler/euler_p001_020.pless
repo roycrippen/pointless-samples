@@ -1,0 +1,129 @@
+# Project Euler Utilities - euler_p001_020.pless
+
+Solutions to [Project Euler](https://projecteuler.net/archives) problems 1 through 20.    
+
+Load utility library.
+
+        "euler_utils" libload tx 
+
+## Solutions
+
+### p001 :: ( -- -> N )
+Euler 001: Multiples of 3 and 5.
+
+        {
+          9 "P001.n" set-var
+          [p001] 23 assert
+        }
+        "p001"  
+          [ 1 P001.n from-to-list  
+            [ [3 is-div-by] [5 is-div-by] cleave or ] filter 
+            sum
+          ] define
+
+        "P001.n" [999] define 
+
+### p002 :: ( -- -> N )
+Euler 002: Even Fibonacci numbers.
+        {
+          40000 "P002.n" set-var
+          [p002] 14328 assert
+        }
+        "p002"  
+          [ 1 40 from-to-list 
+            [fib] map 
+            [[P002.n <] [even] cleave and] filter 
+            sum 
+          ] define 
+
+        "P002.n" [4000000] define 
+
+### p003 :: ( -- -> N )
+Euler 003: Largest prime factor.
+
+        {
+          13195 "P003.n" set-var
+          [p003] 29 assert
+        }
+        "p003" [ P003.n prime-facts first ] define
+
+        "P003.n" [600851475143] define 
+
+### p004 :: ( -- -> N )
+Euler 004: Largest palindrome product.
+
+        {
+          10 "P004.m" set-var
+          99 "P004.n" set-var
+          [p004] 9009 assert
+        }
+        "p004"
+          [ P004.m P004.n [] from-to dup
+            [11 rem 0 =] filter
+            cartproduct 
+            [dup first swap second *] map 
+            [is-palindrome] filter 
+            max
+          ] define
+
+        "P004.m" [800] define
+        "P004.n" [999] define 
+        
+### p010 :: ( -- -> N )
+Euler 010: Summation of primes.
+
+        {
+          10 "P010.n" set-var
+          [p010] 17 assert
+        }
+        "p010"
+          [ P010.n 2 / 1 - 3 
+            2 rollup swap 
+            [ [ prime ] 
+              [ dup rolldown + swap ] 
+              when 
+              2 + 
+            ] times 
+            pop
+          ] define
+
+        "P010.n" [10] define
+
+        "primes"
+          [ 2 / 1 - 3 
+            [ 2 ] rollup swap 
+            [ [ prime ] 
+              [ dup rolldown cons swap ] 
+              when 
+              2 + 
+            ] times
+            pop
+          ] define
+
+
+### euler-list :: ( -- -> [[P E S F]..] )
+Creates a list of Euler problems to solve as a group.
+
+        "euler-list"
+          [ 
+            [
+              [ p001 233168     "p001: " solution-msg  ]
+              [ p002 4613732    "p002: " solution-msg  ]
+              [ p003 6857       "p003: " solution-msg  ]
+              [ p004 906609     "p004: " solution-msg  ]
+            ]
+          ] define
+
+
+### p-all ( -- )
+Helper function to run all problems by folding through list of problems
+
+        "euler_p001_020" run-tests newstack
+
+        "p-all" [ euler-list [] [exec] fold pop tx ] define 
+
+        "euler_p001_020.pless loaded, 'p-all' to run all..." putchars tx '\n' putch tx
+
+` "euler_p001_020" run-tests ` to run unit test 
+
+

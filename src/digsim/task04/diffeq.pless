@@ -1,0 +1,16 @@
+        { digsim task04 - diffeq }
+
+        ( d d -> d )
+        "calc-derivative"
+          [ dampCoeff * swap 
+            springCoeff  * + 
+            mass / neg gravity + 
+          ] define 
+
+        ( d -> -- ) 
+        "differential-equations" 
+          [ xNow xdNow calc-derivative 
+            "xdd" set-var 
+          ] define 
+
+        "diffeq       loaded...\n" putchars tx

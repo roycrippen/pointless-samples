@@ -1,0 +1,47 @@
+        { digsim task04 }
+
+        "drvrdata"  libload
+        "drvrinit"  libload
+        "def_data"  libload
+        "init"      libload
+        "advance"   libload
+        "diffeq"    libload
+        "prn_data"  libload
+        "setup"     libload
+        "procevnt"  libload
+        "input"     libload
+
+        ( -- -> IO )
+        "run-sim" 
+          [ initialization
+            differential-equations
+            process-events 
+            [ stopSimulation? ] 
+            [ "run complete\n" putchars tx 
+              setup-driver-for-run
+            ] 
+            [ advance-states
+              differential-equations
+              process-events 
+            ] 
+            tailrec 
+          ]  define 
+
+        "task04       loaded...\n" putchars tx
+        "running sim commands...\n" putchars tx
+
+        setup-driver-for-run
+
+        { run one or more simulations }
+        [xNow xdNow xdd]          PRINT   $ print time, x, xd, xdd
+        "dt"                    0.1 SET   $ lower time fidelity
+        "TERMINATE_SIMULATION"  4.0 SET   $ change stop time
+        "springCoeff"          30.0 SET   $ original value was 39.47
+        "USER_TIME_EVENT"     999.0 SET   $ override USER_TIME_EVENT trigger
+        RUN
+
+        [xNow xdNow]             PRINT    $ print time, position and velocity
+        "dtPrint"              0.1 SET    $ lower print fidelity
+        RUN
+
+        STOP

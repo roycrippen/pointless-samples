@@ -1,0 +1,47 @@
+        { digsim task03 }
+
+        "drvrdata"  libload
+        "drvrinit"  libload
+        "def_data"  libload
+        "init"      libload
+        "advance"   libload
+        "diffeq"    libload
+        "term"      libload
+        "prn_data"  libload
+        "setup"     libload
+        "input"     libload
+
+        ( -- -> IO )
+        "run-sim" 
+          [ initialization
+            differential-equations
+            [ endOfRun ] 
+            [ "run complete\n" putchars tx 
+              setup-driver-for-run
+            ] 
+            [ print-data 
+              advance-states
+              termination-conditions
+              differential-equations 
+            ] 
+            tailrec 
+          ]  define 
+
+        "task03       loaded...\n" putchars tx
+        "running sim commands...\n" putchars tx
+
+        setup-driver-for-run
+
+        { run one or more simulations }
+        [xNow xdNow] PRINT          $ print time, position and velocity
+        "springCoeff" 30.0 SET      $ original value was 39.47
+        RUN
+
+        [xNow] PRINT                $ print time and position
+        "dt" 0.1 SET                $ lower the fidelity
+        RUN
+
+        STOP
+
+
+

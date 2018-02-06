@@ -1,0 +1,11 @@
+        { digsim task04 - prn_data }
+
+        ( d [d] -> s -> IO )
+        "print-data"  
+          [ tNow  put   
+            printItems reverse dup size "cnt" set-var 
+            exec cnt [ ", " putchars put ] times tx
+          ] define 
+
+        "prn_data     loaded...\n" putchars tx
+

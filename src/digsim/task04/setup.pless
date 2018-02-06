@@ -1,0 +1,25 @@
+        { digsim task04 - setup}
+
+        ( [d s func] -> -- )
+        "schedule"
+          [ dup third 
+            events cons 
+            "events" set-var 
+            dup first swap second 
+            set-var
+          ] define
+
+        ( -- )
+        "setup-driver-for-run"
+          [ 0 "stopSimulation?" set-var
+            digsim-initialization 
+            driver-default-data
+            default-data
+            [] "events" set-var
+            tStop 0.1 - "pTrigger" set-var
+            [ pTrigger "USER_TIME_EVENT"      process-user-time-event ] schedule
+            [ 0.0      "LOG_PRINT_DATA"       process-print-event     ] schedule
+            [ tStop    "TERMINATE_SIMULATION" process-terminate-event ] schedule
+          ] define
+
+        "setup        loaded...\n" putchars tx

@@ -1,0 +1,9 @@
+        { digsim task02 - term }
+
+        ( -- )
+        "termination-conditions" 
+          [ [tNow tStop >] exec
+            "quit" set-var
+          ] define
+
+        "term         loaded...\n" putchars tx

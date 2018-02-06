@@ -1,0 +1,28 @@
+        { digsim task04 - advance }
+
+        ( [d d -> d] -> -- )  
+        "advance-time"            
+          [ tNow dt + 
+            "tNow" set-var 
+          ] define     
+
+        ( [d d -> d] -> -- )  
+        "advance-xNow"  
+          [ xdNow dt * xNow + 
+            "xNow" set-var 
+          ] define     
+
+        ( [d d -> d] -> -- )  
+        "advance-xdNow" 
+          [ xdd dt * xdNow + 
+            "xdNow" set-var 
+          ] define     
+
+        ( [d -> --] [d -> --] [d -> --] -> -- )  
+        "advance-states"   
+          [ advance-time 
+            advance-xNow 
+            advance-xdNow 
+          ] define    
+
+        "advance      loaded...\n" putchars tx

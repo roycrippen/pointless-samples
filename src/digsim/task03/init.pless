@@ -1,0 +1,10 @@
+        { digsim task03 - init }
+
+        ( [[d s -> --].. -> -- )
+        "initialization" 
+          [ 0.0  "tNow"  set-var
+            xIC  "xNow"  set-var
+            xdIC "xdNow" set-var
+          ] define
+
+        "init         loaded...\n" putchars tx

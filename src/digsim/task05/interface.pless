@@ -1,0 +1,26 @@
+        { digsim task05 - interface }
+
+        ( d [d] -> s -> IO )
+        "print-data"  
+          [ tNow  put   
+            printItems dup size "cnt" set-var 
+            exec cnt [ ", " putchars put ] times tx
+          ] define 
+
+        ( d -> -- )
+        "SET" [ swap set-var ] define
+
+        ( -- )
+        "RUN" [ run-sim ] define
+
+        ( [d] -> -- )
+        "PRINT" [ "printItems" set-var ] define
+
+        ( -- -> IO )
+        "STOP" 
+          [ 1 "stopSimulation?" set-var
+            "STOP command issued.\n\n" putchars tx
+          ] define 
+
+        "interface    loaded...\n" putchars tx
+

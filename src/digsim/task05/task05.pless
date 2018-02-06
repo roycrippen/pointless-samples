@@ -1,0 +1,82 @@
+# DigSim Task 04 - task05.pless
+
+Pointless source code entry point for solving DigSim task04.
+
+Pointless [documentation](). 
+
+### The solution is broken into 4 modules:
+
+| File            | Description                                           |
+| --------------- | ----------------------------------------------------- |
+| task05.pless    | this file                                             |
+| setup-pless     | functions to setup default conditions for the simulation |
+| advance.pless   | functions to advance the state of the simulation       |
+| interface.pless | functions to define input simulation language and output results |
+| events.pless    | functions to process system and user events |
+
+Running simulations follows these steps:
+1. load initial default data
+2. read simulation commands PRINT and SET
+3. execute simulation with RUN command
+4. continues steps 2 and 3 until STOP command
+
+##### Load application libraries.
+
+        "setup"      libload
+        "advance"    libload
+        "interface"  libload
+        "events"     libload
+
+
+##### Primary simulation run function.
+
+        { 
+          $ this is an inline test of run-sim without any output
+          setup-driver-for-run
+          100 "dtPrint" set-var
+          100 "LOG_PRINT_DATA" set-var
+          [ stopSimulation? ]                  
+          [] 
+          [ advance-states                    
+            process-events               
+          ] 
+          tailrec
+          "Simulation test run completed with dt = " putchars 
+          dt put tx
+          [xNow 0.281945 - abs 0.0000001 <] 1 assert 
+        }
+        ( -- -> IO )
+        "run-sim" 
+          [ process-events                      $  process all events for time slice 0
+            [ stopSimulation? ]                  $  has stop flag been set to true
+            [ "run complete\n\n" putchars tx    $  yes, simulation complete, end recursion
+              setup-driver-for-run              $  and setup default initial conditions again
+            ] 
+            [ advance-states                    $  no, advance all of the states -> t, x, xd...
+              process-events                    $  and process all events for this time slice
+            ] 
+            tailrec                             $  recursive call until stopSimulation? true
+          ]  define 
+
+
+##### Initial setup.
+
+        "task05       loaded...\n"  putchars tx
+        "running sim commands...\n" putchars tx
+
+        setup-driver-for-run                   $  setup default initial conditions
+
+##### Run two simulations using sim input language (PRINT, SET, RUN and STOP).
+See `interface.pless` for details.
+
+        [xdNow xNow]   PRINT                    $  print time, position and velocity
+        "restCoeff" 1.10 SET                    $  bounce growing
+        "dtPrint"   0.01 SET                    $  less print points
+        RUN
+
+        [xdNow xNow]              PRINT         $ print time, position and velocity
+        "TERMINATE_SIMULATION" 13.0 SET         $ extend simulation 
+        RUN
+
+        STOP
+

@@ -1,0 +1,28 @@
+        { digsim task02 }
+
+        "def_data"  libload
+        "init"      libload
+        "advance"   libload
+        "diffeq"    libload
+        "term"      libload
+        "print"     libload
+
+        ( -- -> IO )
+        "run-sim" 
+          [ print-header 
+            0 "quit" set-var
+            default-data
+            initialization
+            differential-equations
+            [ quit ] 
+            [ "sim complete" ] 
+            [ print-state 
+              advance-states
+              termination-conditions
+              differential-equations 
+            ] 
+            tailrec 
+          ]  define 
+
+        "task02       loaded...\n" putchars tx
+        "\n'run-sim' to execute the simulation..." putchars tx 

@@ -1,0 +1,45 @@
+        { digsim task05 - setup}
+
+        ( [d s func] -> -- )
+        "schedule"
+          [ dup third 
+            events cons 
+            "events" set-var 
+            dup first swap second 
+            set-var
+          ] define
+
+        ( -- )
+        "setup-driver-for-run"
+          [ default-data
+            initialization
+            [] "events" set-var
+            [ 0.0      "HIT_GROUND_EVENT"     process-hit-ground-event  ] schedule
+            [ 0.0      "LOG_PRINT_DATA"       process-print-event       ] schedule
+            [ tStop    "TERMINATE_SIMULATION" process-terminate-event   ] schedule
+          ] define
+
+        ( [s d -> --].. -> -- )
+        "default-data"
+        [
+          [ "restCoeff"        0.800    $  Coefficent of restitution [real]]
+            "dt"               0.001    $  Simulation time step [sec]
+            "dtPrint"          0.005    $  Time step between printing data [sec]
+            "gravity"         -9.880    $  Acceleration due to gravity [m/sec**2]
+            "xdd"             -9.880    $  Acceleration [m/sec**2]
+            "tStart"           0.000    $  Simulation start time [sec]  
+            "tStop"           10.000    $  Simulation stop time [sec]  
+            "xIC"             10.000    $  Initial position of suspended mass [m] 
+            "xdIC"             0.000    $  Initial velocity of suspended mass [m/sec]
+            "stopSimulation?"   0        $  stop simulation flag [bool]
+          ] dictionary 
+        ] define
+
+        ( [[d s -> --].. -> -- )
+        "initialization" 
+          [ 0.0  "tNow"  set-var        $  Current time [sec]
+            xIC  "xNow"  set-var        $  Current position [m]
+            xdIC "xdNow" set-var        $  Current velocity [m/sec]
+          ] define
+
+        "setup        loaded...\n" putchars tx

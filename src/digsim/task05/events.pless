@@ -1,0 +1,37 @@
+        { digsim task05 - events }
+
+        ( -- )
+        "process-events" 
+          [ events
+            [] 
+            [ [] cons exec ] 
+            fold
+          ] define
+
+        ( -- -> IO )
+        "process-print-event"
+          [ pop 
+            [ LOG_PRINT_DATA tNow <= ]
+            [ print-data
+              dtPrint tNow + "LOG_PRINT_DATA" set-var       
+            ]
+            when
+          ] define
+
+        ( -- -> b )
+        "process-terminate-event"
+          [ [TERMINATE_SIMULATION tNow <=]
+            [1 "stopSimulation?" set-var]
+            when
+          ] define
+
+        ( -- )
+        "process-hit-ground-event"
+          [ [xNow HIT_GROUND_EVENT <]
+            [ xNow neg "xNow" set-var
+              xdNow restCoeff * neg "xdNow" set-var
+            ]
+            when
+          ] define
+
+        "events       loaded...\n" putchars tx

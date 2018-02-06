@@ -1,0 +1,597 @@
+# Pointless Primitives 
+
+## About Pointless {ignore=true}
+Pointless is a small but powerful stack based concatenative programming language inspired by the [Joy](https://en.wikipedia.org/wiki/Joy_(programming_language)) Programming language. 
+
+This defines a function that squares a number on the stack.
+
+        "square" [ dup * ] define
+
+This is a test.
+
+        {
+          [5 square] 25 assert
+        }
+
+This example solves Project Euler problem 2, with a test.
+
+        { 
+          [p002] 4613732 assert   
+        }           
+        $ Euler 002: Even Fibonacci numbers
+        "p002"                    $ this is a line comment. from '$' to the end of the line 
+          [ 1 40 from-to-list     $ generate a list of integers from 1 to 40 inclusive
+            [fib] map             $ apply fib function to all elements
+            [ [4000000 <]         $ greater than 4,000,000 function
+              [even]              $ is it an even number function 
+              cleave and          $ join execution of both functions with logical 'and'
+            ] filter              $ apply the filter
+            sum                   $ sum the matching elements
+          ] define 
+
+---
+## Pointless Primitives
+Primitive functions are the building blocks for all applications. Pointless contains less than 40 primitive functions that can read and write the stack. The remainder of the language is comprised of library functions using these primitives.
+The Core library currently contains more than 140 functions. 
+
+---
+
+| Primitive    | Description    |
+| ------------ | -------------- |
+| [pop](#pop-x-)                    | Removes X from top of the stack.
+| [dup](#dup-x-x-x)                 | Pushes an extra copy of X onto stack.
+| [dip](#dip-x-p-x)                 | Saves X, executes P, pushes X back.
+| [cons](#cons-x-a-b)               | Aggregate B is aggregate A with a new member X at the front.
+| [uncons](#uncons-a-f-r)           | F and R are the first and the rest of non-empty aggregate A. 
+| [concat](#concat-s-t-u)           | Sequence U is the concatenation of sequences S and T. 
+| [size](#size-a-i)                 | Integer I is the number of elements of aggregate A.  
+| [+](#e-f-k)                       | Float K is the result of adding float E to float F.
+| [-](#-e-f-k)                      | Float K is the result of subtracting float F from float E.  
+| [*](#e-f-k-1)                     | Float K is the product of floats E and F.  
+| [/](#e-f-k-2)                     | Float K is the ratio of floats E and F. 
+| [%](#e-f-k-3)                     | Float K is the remainder of dividing E by F.  
+| [=](#x-y-b)                       | Tests whether X equal to Y.
+| [!=](#x-y-b-1)                    | Tests whether X not equal to Y.
+| [<=](#x-y-b-2)                    | Tests whether X less than or equal to Y.
+| [>=](#x-y-b-3)                    | Tests whether X greater than or equal to Y.
+| [<](#x-y-b-4)                     | Tests whether X less than Y.
+| [>](#x-y-b-5)                     | Tests whether X greater than Y.
+| [and](#and-x-y-b)                 | B is the logical conjunction for truth values X and Y. 
+| [or](#or-x-y-b)                   | B is the logical disjunction for truth values X and Y. 
+| [null](#null-x-b)                 | Tests for empty aggregate X or zero numeric. 
+| [list?](#list-x-b)                | Tests whether X is a list.
+| [string?](#string-x-b)            | Tests whether X is a string.
+| [number?](#number-x-b)            | Tests whether X is a number.
+| [stack](#stack-x-y-z-x-y-z-z-y-x) | Pushes the stack as a list.
+| [unstack](#unstack-x-y-y-x)       | The list [X Y ..] becomes the new stack.
+| [show](#show-x-s)                 | Converts item X to a string. Works all types except functions.
+| [eval](#eval-p-)                  | Executes P without popping [P]. So, [P] eval == [P] P.
+| [exec](#exec-p-)                  | Executes P. So, [P] exec == P.
+| [ifte](#ifte-b-t-f-)              | Executes B. If that yields true, then executes T else executes F.
+| [linrec](#linrec-p-t-r1-r2-)      | Executes P. If that yields true, executes T. Else executes R1, recurses, executes R2.  
+| [define](#define-s-p-)            | Defines P as a function named from string S. 
+| [tx](#tx-x-)                      | Transmits X from stack to stdout. 
+| [put](#put-x-)                    | Writes X to output buffer, pops X off stack. 
+| [putch](#putch-n-)                | Writes numeric N character whose ASCII is N to output buffer. 
+| [sqrt](#sqrt-f-f)                 | Returns square root of float F. 
+| [sin](#sin-f-f)                   | Returns sin of float F in radians.
+| [cos](#cos-f-f)                   | Returns cos of float F in radians.
+| [tan](#tan-f-f)                   | Returns tan of float F in radians.
+| [_libopen](#_libopen-s-)          | Load library in fully qualified file S. USE Core library function libload instead.   
+| [_runtests](#_runtests-s-)        | Run tests inside {} in fully qualified file S. USE Core library function run-tests instead.
+
+
+
+### pop :: ( X -> -- ) 
+Removes X from top of the stack. Error if X not on the stack.  
+Example usage:
+
+        { 
+          [10 20 30 pop stack] [20 10] assert 
+        }           
+        10 20 30    $ put 10, 20 and 30 on the stack
+        pop         $ remove 30 from top of stack
+        pop pop     $ remove 20 than 30 from stack, stack is empty
+
+### dup :: ( X -> X X )
+Pushes an extra copy of X onto stack. Error if X not on the stack.  
+Example usage:
+
+        { 
+          [10 dup dup stack] [10 10 10] assert 
+        }  
+        10 dup dup   $ puts 10 on the stack then copies it twice
+        newstack     $ clears the stack
+
+
+### dip :: ( X [P] -> ... X )
+Saves X, executes P, pushes X back. Error if X and [P] are not on the stack. 
+Example usage:
+
+        { 
+          [2 10 [1 +] dip stack] [10 3] assert 
+        }  
+        2 10 [1 +]   $ puts 2, 10 and quotation [1 +] on the stack 
+        dip          $ saves 10, puts 3 on stack from adding 2 and 1
+                     $ then puts 10 back on stack
+                     $ final stack is [10 3] (3 is at the top) 
+        newstack     $ clears the stack
+
+### cons :: ( X A -> B )
+Aggregate B is aggregate A with a new member X at the front.  Error if X and A are not on the stack. 
+Example usage:
+
+        {  
+          [10 [20 30] cons] [10 20 30] assert   
+          ['a' "bc" cons] "abc"        assert
+        }   
+        10 [20 30]   $ puts 10 and aggregate [20 30] on stack 
+        cons         $ adds 10 to the aggregate -> [10 20 30]
+        'a' "bc"     $ puts char 'a' and string "bc" on stack
+        cons         $ adds 'a' to string -> "abc" 
+        newstack     $ clears the stack
+
+### uncons :: ( A -> F R )
+F and R are the first and the rest of non-empty aggregate A. 
+Example usage:
+
+        {  
+          [[1 2 3] uncons stack] [[2 3] 1]  assert   
+          ["abc" uncons stack] ["bc" 'a']   assert
+        }   
+        [1 2 3]     $ puts aggregate [1 2 3] on stack 
+        uncons      $ puts 1 rest of aggregate on stack -> [2 3] 1
+        "abc"       $ puts string "abc" on stack
+        uncons      $ puts 'a' and rest of aggregate on stack -> "bc" 'a' 
+        newstack    $ clears the stack
+
+### concat :: ( S T -> U ) 
+Sequence U is the concatenation of sequences S and T.  
+Example usage:
+
+        {
+          ["ab" "cd" concat] "abcd" assert 
+          [[1 2] [3 4] concat] [1 2 3 4] assert
+        }
+        "ab" "cd" concat    $ put "abcd" on the stack
+        [1 2] [3 4] concat  $ puts [1 2 3 4] on the stack
+        newstack            $ clears the stack
+
+### size :: ( A -> I ) 
+Integer I is the number of elements of aggregate A.   
+Example usage:
+
+        {
+          ["abc" size] 3 assert 
+          [[1 2 3] size] 3 assert
+        }
+        "abc" size    $ put 3 on the stack
+        [1 2 3] size  $ puts 3 on the stack
+        newstack      $ clears the stack
+
+### + :: ( E F -> K )
+Float K is the result of adding float E to float F. 
+Example usage:
+
+        {
+          [5 2 +] 7 assert
+        }
+        [5 2 +]    $ puts the result 7 on the stack
+        newstack   $ clears the stack
+
+### - :: ( E F -> K )
+Float K is the result of subtracting float F from float E.  
+Example usage:
+
+        {
+          [5 2 -] 3 assert
+        }
+        [5 2 -]    $ puts the result 3 on the stack
+        newstack   $ clears the stack
+
+### * :: ( E F -> K )
+Float K is the product of floats E and F.  
+Example usage:
+
+        {
+          [5 2 *] 10 assert
+        }
+        [5 2 *]    $ puts the result 10 on the stack
+        newstack   $ clears the stack
+
+### / :: ( E F -> K )
+Float K is the ratio of floats E and F.  
+Example usage:
+
+        {
+          [5 2 /] 2.5 assert
+        }
+        [5 2 /]    $ puts the result 2.5 on the stack
+        newstack   $ clears the stack
+
+### % :: ( E F -> K )  
+Float K is the remainder of dividing E by F.  
+Example usage:
+
+        {
+          [5 2 %] 1 assert
+        }
+        [5 2 %]    $ puts the result 1 on the stack
+        newstack   $ clears the stack
+
+### = :: ( X Y -> B ) 
+Tests whether X equal to Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' =]     0 assert
+          [1 1 =]         1 assert
+          ["ab" "cd" =]   0 assert
+          [[1 2] [1 2] =] 1 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' =       $ puts 0 on the stack
+        1 1 =           $ puts 1 on the stack
+        "ab" "cd" =     $ puts 0 on the stack
+        [1 2] [1 2] =   $ puts 1 on the stack
+        newstack        $ clears the stack 
+
+### != :: ( X Y -> B )  
+Tests whether X not equal to Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' !=]     1 assert
+          [1 1 !=]         0 assert
+          ["ab" "cd" !=]   1 assert
+          [[1 2] [1 2] !=] 0 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' !=       $ puts 1 on the stack
+        1 1 !=           $ puts 0 on the stack
+        "ab" "cd" !=     $ puts 1 on the stack
+        [1 2] [1 2] !=   $ puts 0 on the stack
+        newstack         $ clears the stack 
+
+### <= :: ( X Y -> B )
+Tests whether X less than or equal to Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' <=]     1 assert
+          [1 1 <=]         1 assert
+          ["ab" "cd" <=]   1 assert
+          [[1 2] [1 2] <=] 1 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' <=       $ puts 1 on the stack
+        1 1 <=           $ puts 1 on the stack
+        "ab" "cd" <=     $ puts 1 on the stack
+        [1 2] [1 2] <=   $ puts 1 on the stack
+        newstack         $ clears the stack 
+
+### >= :: ( X Y -> B ) 
+Tests whether X greater than or equal to Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' >=]     0 assert
+          [1 1 >=]         1 assert
+          ["ab" "cd" >=]   0 assert
+          [[1 2] [1 2] >=] 1 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' >=       $ puts 0 on the stack
+        1 1 >=           $ puts 1 on the stack
+        "ab" "cd" >=     $ puts 0 on the stack
+        [1 2] [1 2] >=   $ puts 1 on the stack
+        newstack         $ clears the stack 
+
+### < :: ( X Y -> B ) 
+Tests whether X less than Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' <]     1 assert
+          [1 1 <]         0 assert
+          ["ab" "cd" <]   1 assert
+          [[1 2] [1 2] <] 0 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' <       $ puts 1 on the stack
+        1 1 <           $ puts 0 on the stack
+        "ab" "cd" <     $ puts 1 on the stack
+        [1 2] [1 2] <   $ puts 0 on the stack
+        newstack        $ clears the stack 
+
+### > :: ( X Y -> B ) 
+Tests whether X greater than Y. X and Y must be the same type. 
+Example usage:
+
+        {
+          ['a' 'b' >]     0 assert
+          [1 1 >]         0 assert
+          ["ab" "cd" >]   0 assert
+          [[1 2] [1 2] >] 0 assert
+        }
+        $ 1 is true, 0 is false
+        'a' 'b' >       $ puts 0 on the stack
+        1 1 >           $ puts 0 on the stack
+        "ab" "cd" >     $ puts 0 on the stack
+        [1 2] [1 2] >   $ puts 0 on the stack
+        newstack        $ clears the stack 
+
+### and :: ( X Y -> B ) 
+B is the logical conjunction for truth values X and Y. 
+Example usage:
+
+        {
+          [1 1 and] 1 assert
+          [1 0 and] 0 assert
+          [0 0 and] 0 assert
+        }
+        1 1 and    $ puts 1 on the stack
+        1 0 and    $ puts 0 on the stack
+        0 0 and    $ puts 0 on the stack
+        newstack   $ clears the stack 
+        
+### or :: ( X Y -> B )
+B is the logical disjunction for truth values X and Y. 
+Example usage:
+
+        {
+          [1 1 or] 1 assert
+          [1 0 or] 1 assert
+          [0 0 or] 0 assert
+        }
+        1 1 or     $ puts 1 on the stack
+        1 0 or     $ puts 1 on the stack
+        0 0 or     $ puts 0 on the stack
+        newstack   $ clears the stack 
+        
+### null :: ( X -> B )
+Tests for empty aggregate X or zero numeric. 
+Example usage:
+
+        {
+          [0  null]   1 assert
+          ["" null]   1 assert
+          ["ab" null] 0 assert
+          [[] null]   1 assert
+          [[1] null]  0 assert
+        }
+        0  null 1     $ puts 1 on the stack
+        "" null 1     $ puts 1 on the stack
+        "ab" null 0   $ puts 0 on the stack
+        [] null 1     $ puts 1 on the stack
+        [1] null 0    $ puts 0 on the stack
+        newstack      $ clears the stack 
+
+### list? :: ( X -> B )
+Tests whether X is a list.  
+Example usage:
+
+        {
+          ["ab" list?] 0 assert
+          [1    list?] 0 assert
+          [[]   list?] 1 assert
+          [[1]  list?] 1 assert
+        }
+        "ab" list? 0   $ puts 0 on the stack
+        1    list? 0   $ puts 0 on the stack
+        []   list? 1   $ puts 1 on the stack
+        [1]  list? 1   $ puts 1 on the stack
+        newstack       $ clears the stack 
+
+### string? :: ( X -> B )
+Tests whether X is a string.  
+Example usage:
+
+        {
+          [[1]  string?] 0 assert
+          [1    string?] 0 assert
+          [""   string?] 1 assert
+          ["ab" string?] 1 assert
+        }
+        [1]  string? 0   $ puts 0 on the stack
+        1    string? 0   $ puts 0 on the stack
+        ""   string? 1   $ puts 1 on the stack
+        "ab" string? 1   $ puts 1 on the stack
+        newstack         $ clears the stack 
+
+### number? :: ( X -> B )
+Tests whether X is a number.  
+Example usage:
+
+        {
+          [[1]  number?] 0 assert
+          ["ab" number?] 0 assert
+          [0    number?] 1 assert
+          [1    number?] 1 assert
+        }
+        [1]  number? 0   $ puts 0 on the stack
+        "ab" number? 0   $ puts 0 on the stack
+        0    number? 1   $ puts 1 on the stack
+        1    number? 1   $ puts 1 on the stack
+        newstack         $ clears the stack 
+
+### stack :: ( .. X Y Z -> .. X Y Z [Z Y X ..] )
+Pushes the stack as a list. 
+Example usage:
+
+        {
+          ["abc" 1 [1 2 3] stack] [[1 2 3]  1 "abc"] assert
+        }
+        "abc" 1 [1 2 3] stack  $ adds list [[1 2 3]  1 "abc"] to the top of the stack
+        newstack               $ clears the stack 
+        
+### unstack :: ([X Y ..] -> ..Y X )
+The list [X Y ..] becomes the new stack. 
+Example usage:
+
+        {
+          [1 2 [3 4] unstack stack] [3 4] assert
+        }
+        1 2 [3 4] unstack  $ replaces 1 and 2 on the stack with 3 and 4 
+        newstack           $ clears the stack 
+
+### show :: ( X -> S )
+Converts item X to a string. Works all types except functions.
+Example usage:
+        
+        {
+          [1 show]     "1"       assert
+          [[pop] show] "[ pop ]" assert
+        }
+        1 show       $ put "1" on the stack
+        [pop] show   $ put "[pop]" on the stack
+        newstack     $ clears the stack 
+        
+### eval :: ( [P] -> ... )
+Executes P without popping [P]. So, [P] eval == [P] P. 
+Example usage:
+
+        {
+          [[1 2 +] eval stack] [3 [1 2 +]] assert
+        }
+        [1 2 +] eval   $ puts [1 2 +] then 3 on the stack  
+        newstack       $ clears the stack 
+        
+### exec :: ( [P] -> ... )
+Executes P. So, [P] exec == P. 
+Example usage:
+
+        {
+          [[1 2 +] exec stack] [3] assert
+        }
+        [1 2 +] exec   $ puts 3 on the stack  
+        newstack       $ clears the stack 
+        
+### ifte :: ( [B] [T] [F] -> ... )
+Executes B. If that yields true, then executes T else executes F.
+Example usage:
+
+        {
+          [[1 2 <] [1] [0] ifte] 1 assert
+          [3 [even] [1 +] [10 *] ifte] 30 assert
+        }
+        [1 2 <] [1] [0] ifte
+        3 [even] [1 +] [10 *] ifte
+        newstack       $ clears the stack 
+
+### linrec :: ( [P] [T] [R1] [R2] -> ... )
+Executes P. If that yields true, executes T. Else executes R1, recurses, executes R2
+Example usage:
+
+        {
+          [[[1 2] [3 4]] [null] [] [uncons] [concat] linrec] [1 2 3 4] assert  
+        }
+        [[1 2] [3 4]] $ create nested list that will be flattened
+        [null]        $ is list empty
+        []            $ yes, do nothing, list == [1 2 3 4] 
+        [uncons]      $ take a value from inner list recursively
+        [concat]      $ concat value into outer list
+        linrec        $ recursively apply until null list
+        newstack      $ clears the stack 
+        
+### define :: ( S [P] -> -- )
+Defines P as a function named from string S.
+Example usage:
+
+        {
+          ["pop_" [pop] define 1 2 pop_] 1 assert
+        }
+        "pop_" [pop] define   $ define function pop_
+        1 2 pop_              $ leaves 1 on the stack
+        newstack              $ clears the stack 
+
+### tx :: ( X -> -- )
+Transmits X from stack to stdout.
+Example usage:
+
+        {
+          ["hello world" tx stack] [] assert 
+        }
+        "hello world" tx   $ prints 'hello world' to stdout
+
+### put :: ( X -> -- )
+Writes X to output buffer, pops X off stack.
+Example usage:
+
+        {
+          [10 put tx stack] [] assert
+        }
+        10 put tx   $ prints '10' to stdout
+
+### putch :: ( N -> -- )
+Writes numeric N character whose ASCII is N to output buffer.
+Example usage:
+
+        {
+          ['a' putch tx stack] [] assert
+          [97  putch tx stack] [] assert
+        }
+        'a' putch tx   $ prints 'a' to stdout
+        97  putch tx   $ also prints 'a' to stdout
+
+### sqrt :: ( F -> F )
+Returns square root of float F.
+Example usage:
+
+        {
+          [25 sqrt] 5 assert
+        }
+        25 sqrt   $ leaves 5 on stack 
+        newstack  $ clears the stack 
+
+### sin :: ( F -> F )
+Returns sin of float F in radians.
+Example usage:
+
+        {
+          [30 radians sin 0.5 - 0.00001 <] 1 assert
+        }
+        30 radians sin    $ compute sin
+        0.5 - 0.00001 <   $ test against EPSILON, 1 on stack
+        newstack          $ clears the stack 
+
+### cos :: ( F -> F )
+Returns cos of float F in radians.
+Example usage:
+
+        {
+          [60 radians cos 0.5 - 0.00001 <] 1 assert
+        }
+        60 radians cos    $ compute cosine
+        0.5 - 0.00001 <   $ test against EPSILON, 1 on stack
+        newstack          $ clears the stack 
+
+### tan :: ( F -> F )
+Returns tan of float F in radians.
+Example usage:
+
+        {
+          [45 radians tan 1.0 - 0.00001 <] 1 assert
+        }
+        45 radians tan    $ compute tangent
+        1.0 - 0.00001 <   $ test against EPSILON, 1 on stack
+        newstack          $ clears the stack 
+
+### _libopen :: ( S -> ... )
+Load library in fully qualified file S. USE Core library function libload instead.
+Example usage:
+
+      $ Not recommend. Use library function libload that calls it.
+      "some\path\primitives_doc.pless" _libopen  
+
+### _runtests :: ( S -> ... )
+Run tests inside {} in fully qualified file S. USE Core library function run-tests instead.
+Example usage:
+
+      $ Not recommend. Use library function run-tests that calls it.
+      "some\path\primitives_doc.pless" _runtests  
+
+
+
+        
+

@@ -1,0 +1,63 @@
+# Project Euler Utilities - euler_utils.pless
+
+Helper functions for solving [Project Euler](https://projecteuler.net/archives) problems.    
+
+### assert-str :: ( A B  -> S )
+Returns `==` if A and B are equal, `!=` otherwise.
+
+        "assert-str"    [ [=] [ " == " ] [ " != " ] ifte ] define
+
+### solution-msg :: ( A B S -> -- )
+Tests if A equals B and creates message using S. 
+Returns either test failed or passed message.
+
+        {
+          1 1 "should show EQUAL message: " solution-msg tx
+          1 0 "should show NOT EQUAL message: " solution-msg tx
+        }
+        "solution-msg" 
+          [ putchars assert-str rolldown 
+            put putchars put '\n' putch
+          ] define
+
+### is-div-by :: ( N M -> B )
+Returns 1 if N is divisible by M, otherwise 0.
+
+        { 
+          [4 2 is-div-by] 1 assert
+          [3 2 is-div-by] 0 assert
+        }
+        "is-div-by" [ % 0 = ] define
+
+### prime-facts :: ( N -> [N..])
+Returns a list of the prime factors of N.
+
+        {
+          [342 prime-facts] [19 3 3 2] assert
+          [13195 prime-facts] [29 13 7 5] assert
+        }
+        "prime-facts" [ 2 [] rollup go-pf ] define
+        "go-pf" 
+          [ [dup2 >=] 
+            [ 
+              [dup2 rem 0 =] 
+              [rolldown dup2 cons swap pop rollup / 2 go-pf] 
+              [succ go-pf]
+              ifte 
+            ]    
+            [pop pop]
+            ifte 
+          ] define
+
+          "euler_utils.pless loaded..." putchars tx
+
+### is-palindrome :: ( N -> B )
+Returns 1 if N is a palindrome, otherwise 0
+
+        {
+          [5002005 is-palindrome] 1 assert
+          [5002006 is-palindrome] 0 assert
+        }
+        "is-palindrome" [ show dup reverse = ] define
+
+`"euler_utils" run-tests` to run unit test 

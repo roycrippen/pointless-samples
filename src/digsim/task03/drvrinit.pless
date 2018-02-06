@@ -1,0 +1,22 @@
+        { digsim task03 - drvrdata }
+
+        ( [s d -> --].. -> -- )
+        "digsim-initialization"
+        [
+          [ "dampCoeff"     0.00        $  Damping force per velocity [N/m/s]
+            "dt"            0.00        $  Simulation time step [sec]
+            "gravity"       0.00        $  Acceleration due to gravity [m/sec**2]
+            "mass"          0.00        $  Mass suspended from spring (Kg]
+            "springCoeff"   0.00        $  Restoring force per position [N/m]
+            "tStart"        0.00        $  Initial time [sec]  
+            "tStop"         0.00        $  Simulation stop time [sec]  
+            "xIC"           0.00        $  Initial position of suspended mass (m] 
+            "xdIC"          0.00        $  Initial velocity of suspended mass [m/sec] 
+            "tNow"          0.00        $  time   
+            "xNow"          0.00        $  position
+            "xdNow"         0.00        $  velocity 
+            "xdd"           0.00        $  acceleration
+          ] dictionary 
+        ] define
+
+        "drvrinit     loaded...\n" putchars tx

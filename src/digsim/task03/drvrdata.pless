@@ -1,0 +1,11 @@
+        { digsim task03 - drvrdata }
+
+        ( [[d s -> --].. -> -- )
+        "driver-default-data" 
+          [ 0.0  "tNow"   set-var
+            0.0  "tStart" set-var
+            0.0  "tStop"  set-var
+            0.01 "dt"     set-var
+          ] define
+
+        "drvrdata     loaded...\n" putchars tx

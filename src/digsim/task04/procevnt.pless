@@ -1,0 +1,41 @@
+        { digsim task04 - procevnt }
+
+        ( -- )
+        "process-events" 
+          [ events
+            [] 
+            [ [] cons exec ] 
+            fold
+          ] define
+
+        ( -- -> IO )
+        "process-print-event"
+          [ pop 
+            [LOG_PRINT_DATA tNow <=]
+            [ print-data
+              dtPrint tNow + "LOG_PRINT_DATA" set-var       
+            ]
+            when
+          ] define
+
+        ( -- -> b )
+        "process-terminate-event"
+          [ [TERMINATE_SIMULATION tNow <=]
+            [ 1 "stopSimulation?" set-var]
+            when
+          ] define
+
+        { print low resolution until 0.1 from tStop }
+        ( -- -> IO )
+        "process-user-time-event"
+          [ [USER_TIME_EVENT tNow <=]
+            [ "print fidelity increasing to dt value = " putchars 
+              dt put 
+              " seconds..." putchars tx
+              dt "dtPrint" set-var
+              tStop 999 + "USER_TIME_EVENT" set-var       
+            ]
+            when
+          ] define
+
+        "procevnt     loaded...\n" putchars tx

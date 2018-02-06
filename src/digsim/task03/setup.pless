@@ -1,0 +1,10 @@
+        { digsim task03 - setup}
+
+        "setup-driver-for-run"
+          [ 0 "endOfRun" set-var
+            digsim-initialization 
+            driver-default-data
+            default-data
+          ] define
+
+        "setup        loaded...\n" putchars tx

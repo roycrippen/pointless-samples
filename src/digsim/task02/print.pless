@@ -1,0 +1,13 @@
+        { digsim task02 - print }
+
+        ( d d d -> s -> IO )
+        "print-state"  
+          [ tNow  put ", " putchars   
+            xNow  put ", " putchars
+            xdNow put tx
+          ] define 
+
+        ( s -> IO)
+        "print-header" [ "#time, x, xd" putchars tx ] define
+
+        "print        loaded...\n" putchars tx

@@ -1,0 +1,41 @@
+{
+    "cSpell.words": [
+      "aggregate",
+      "concat",
+      "concatenative",
+      "disjunction",
+      "eval",
+      "ifte",
+      "libload",
+      "linrec",
+      "newstack",
+      "putchars",
+      "putstrings",
+      "recurses",
+      "rolldown",
+      "rollup",
+      "sequor",
+      "uncons"
+    ],
+    "cSpell.enabledLanguageIds": [
+      "c",
+      "cpp",
+      "csharp",
+      "go",
+      "handlebars",
+      "javascript",
+      "javascriptreact",
+      "json",
+      "latex",
+      "markdown",
+      "php",
+      "plaintext",
+      "pointless",
+      "python",
+      "restructuredtext",
+      "text",
+      "typescript",
+      "typescriptreact",
+      "yml"
+    ]
+  }

@@ -1,0 +1,63 @@
+        { digsim task01 }
+
+        ( -- )
+        [ "dampCoeff"     8.88  
+          "dt"            0.01  
+          "gravity"      -9.88  $ need to change defines to have quoted values - so it will work for pl-test.pless
+          "mass"          1.00  $ add library function dictionary for "key" value pairs
+          "springCoeff"  39.47  
+          "tStop"         2.50  
+          "xIC"           0.00  
+          "xdIC"          0.00  
+          "tState"        0.00  
+          "xState"         xIC  
+          "xdState"       xdIC  
+          "xdd"           0.00 
+        ] dictionary 
+
+        ( d d -> d )
+        "calc-derivative"
+          [ dampCoeff * swap 
+            springCoeff  * + 
+            mass / neg gravity + 
+          ] define 
+
+        ( d d [d d -> d] s [s -> --] -> -- ) 
+        "next-xdd" [ xState xdState calc-derivative "xdd" set-var ] define 
+
+        ( -- )
+        "print-header" [ "#time, x, xd" putchars tx ] define
+
+        ( -- )
+        "initialize-state" 
+          [ 0.0  "tState"  set-var
+            xIC  "xState"  set-var
+            xdIC "xdState" set-var
+          ] define
+
+        ( -- )
+        "print-state"  
+          [ tState  put ", " putchars   $ this is a comment
+            xState  put ", " putchars
+            xdState put tx
+          ] define 
+
+        ( -- )
+        "next-xState"   [ xdState dt * xState + "xState" set-var ]  define 
+        "next-xdState"  [ xdd dt * xdState + "xdState" set-var ]    define 
+        "next-tState"   [ tState dt + "tState" set-var ]            define 
+        "next-state"    [ next-xdd next-tState 
+                          next-xState next-xdState ]                define 
+
+        "run-sim" 
+          [ initialize-state print-header
+            [ tStop tState <= ] 
+            [ "sim complete" ] 
+            [ print-state next-state ] 
+            tailrec 
+          ]  define 
+
+        "DigSim task01 loaded...\n" putchars tx
+        "'run-sim' to execute the simulation...\n" putchars tx 
+
+        { 0.0001 "dt" set-var 3 [run-sim] times }

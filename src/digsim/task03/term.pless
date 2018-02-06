@@ -1,0 +1,9 @@
+        { digsim task03 - term }
+
+        ( -- )
+        "termination-conditions" 
+          [ [tNow tStop >] exec
+            "endOfRun" set-var
+          ] define
+
+        "term         loaded...\n" putchars tx

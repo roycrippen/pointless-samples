@@ -1,0 +1,19 @@
+        { digsim task03 - def_data }
+
+        ( [s d -> --].. -> -- )
+        "default-data"
+        [
+          [ "dampCoeff"     8.88        $  Damping force per velocity [N/m/s]
+            "dt"            0.01        $  Simulation time step [sec]
+            "gravity"      -9.88        $  Acceleration due to gravity [m/sec**2]
+            "mass"          1.00        $  Mass suspended from spring (Kg]
+            "springCoeff"  39.47        $  Restoring force per position [N/m]
+            "tStart"        0.00        $  Initial time [sec]  
+            "tStop"         2.50        $  Simulation stop time [sec]  
+            "xIC"           0.00        $  Initial position of suspended mass (m] 
+            "xdIC"          0.00        $  Initial velocity of suspended mass [m/sec]
+            "endOfRun"             0        $  stop flag, 0 -> continue, 1 -> stop
+          ] dictionary 
+        ] define
+
+        "def_data     loaded...\n" putchars tx

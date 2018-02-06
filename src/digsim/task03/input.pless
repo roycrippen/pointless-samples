@@ -1,0 +1,20 @@
+        { digsim task03 - input }
+
+
+        ( d -> -- )
+        "SET" [ swap set-var ] define
+
+        ( -- )
+        "RUN" [ run-sim ] define
+
+        ( [d] -> -- )
+        "PRINT" [ "printItems" set-var ] define
+
+        ( -- -> IO )
+        "STOP" 
+          [ 1 "endOfRun" set-var
+            "STOP command issued.\n" putchars tx
+          ] define 
+
+        "input        loaded...\n" putchars tx
+
