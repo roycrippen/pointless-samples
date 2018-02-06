@@ -14,6 +14,7 @@ Euler 001: Multiples of 3 and 5.
         {
           9 "P001.n" set-var
           [p001] 23 assert
+          999 "P001.n" set-var
         }
         "p001"  
           [ 1 P001.n from-to-list  
@@ -28,6 +29,7 @@ Euler 002: Even Fibonacci numbers.
         {
           40000 "P002.n" set-var
           [p002] 14328 assert
+          4000000 "P002.n" set-var
         }
         "p002"  
           [ 1 40 from-to-list 
@@ -44,6 +46,7 @@ Euler 003: Largest prime factor.
         {
           13195 "P003.n" set-var
           [p003] 29 assert
+          600851475143 "P003.n" set-var
         }
         "p003" [ P003.n prime-facts first ] define
 
@@ -56,6 +59,8 @@ Euler 004: Largest palindrome product.
           10 "P004.m" set-var
           99 "P004.n" set-var
           [p004] 9009 assert
+          800 "P004.m" set-var
+          999 "P004.n" set-var
         }
         "p004"
           [ P004.m P004.n [] from-to dup
@@ -75,6 +80,7 @@ Euler 010: Summation of primes.
         {
           10 "P010.n" set-var
           [p010] 17 assert
+          10 "P010.n" set-var
         }
         "p010"
           [ P010.n 2 / 1 - 3 
