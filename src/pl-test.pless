@@ -8,6 +8,7 @@ Or to run an individual test `txxx` where xxx is the test number to run.
 
 Note: these are not inline unit tests enclosed in {} to run with `run-tests`.
 
+````rust
         $ helper function to display the test results
         "assert'"   
           [ rollup 
