@@ -3,8 +3,8 @@
         ( -- )
         [ "dampCoeff"     8.88  
           "dt"            0.01  
-          "gravity"      -9.88  $ need to change defines to have quoted values - so it will work for pl-test.pless
-          "mass"          1.00  $ add library function dictionary for "key" value pairs
+          "gravity"      -9.88  
+          "mass"          1.00  
           "springCoeff"  39.47  
           "tStop"         2.50  
           "xIC"           0.00  

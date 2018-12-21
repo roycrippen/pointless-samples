@@ -12,7 +12,7 @@ What things you need to install the software and how to install them
 
 
 ````rust
-        "aaa" libload
+        $ "aaa" libload
 
         { [zipped-list last] ['j' 9] assert }
         "zipped-list" [ 'a' 'j' from-to-string 0 9 from-to-list zip ] define
@@ -81,3 +81,47 @@ What things you need to install the software and how to install them
             ]		
             ifte
           ] define 
+          
+        "Map"
+          [
+            [pop Null]
+            [[]]
+            [ [Uncons] dip
+              dup swapd
+              [Map] cons cons
+              [exec] dip
+              Cons ]
+            ifte
+          ] define
+        
+        "Naturals"    [ 0 From          ] define 
+        "Positives"	  [ 1 From          ] define
+        "Evens"       [ 0 [2 +] From-by ] define
+        "Odds"        [ 1 [2 +] From-by ] define
+        "Powers-of-2" [ 1 [2 *] From-by ] define
+        "Ones"        [ 1 []    From-by ] define
+        "Squares"     [ Naturals [dup *] Map ] define
+
+        "primes" [ 1 swap [] from-to [prime ==] filter ] define
+        "primes2" [ "primes_cnt" set-var 1 From [prime ==] Filter primes_cnt Take ] define
+          
+        "P002.n" [4000000] define 
+        "p002" [ 
+          Naturals 
+          [ fib ] Map 
+          [ even ] Filter 
+          [ P002.n < ] Take-while 
+          sum 
+        ] define 
+          
+        $ 4613732 
+        "Take-while" [
+          "predicate" set-var
+          [] swap dup
+          [ First predicate cons exec ] [ [ First swons ] dip Rest dup ] while
+          pop pop
+        ] define 
+
+        $ Naturals [ 10 < ] "predicate" set-var 
+        $ [ ] swap dup 
+        $ [ First predicate cons exec ] [ [ First swons ] dip Rest dup ] while

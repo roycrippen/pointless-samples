@@ -74,7 +74,7 @@ See `interface.pless` for details.
         "dtPrint"   0.01 SET                    $  less print points
         RUN
 
-        [xdNow xNow]              PRINT         $ print time, position and velocity
+        [xdNow xNow xNow]         PRINT         $ print time, position and velocity
         "TERMINATE_SIMULATION" 13.0 SET         $ extend simulation 
         RUN
 
