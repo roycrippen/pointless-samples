@@ -133,3 +133,37 @@ Helper function to run all problems by folding through list of problems
 ` "euler_p001_020" run-tests ` to run unit test 
 
 
+#          [1 40 from-to-list [ fib ] map [ [ P002.n < ] [ even ] cleave and ] [ ] cons dip [ [ ] ] [ "" ] iflist [ ] cons dip rolldown [ [ swons ] [ pop ] ifte ] cons step [ [ ] ] [ "" ] iflist [ ] cons dip shunt 0 [ + ] [ [ ] cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec ] define
+#          [1 40 from-to-list [ fib ] map [ [ P002.n < ] [ even ] cleave and ] [ ] cons dip [ [ ] ] [ "" ] iflist [ ] cons dip rolldown [ [ swons ] [ pop ] ifte ] cons [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] iflist [ ] cons dip [ swons ] [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec 0 [ + ] [ [ ] cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec ] define
+#          [1 40 from-to-list [ fib ] map [ [ P002.n < ] [ even ] cleave and ] [ ] cons dip [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ [ ] cons dip cons ] [ pop ] ifte ] cons [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip cons ] [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec 0 [ + ] [ [ ] cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec] define
+#          [1 40 [ ] [ ] cons [ pop pop ] [ ] cons dip concat [ > ] [ ] cons dip [ [ dup 1 + ] dip ] [ cons ] linrec [ [ 1 0 ] dip [ [ ] cons dip [ + ] stack [ exec ] dip cons unstack [ pop pop ] dip ] [ pop null ] [ pop pop ] [ [ 1 - ] dip dup [ dip ] cons dip ] [ ] linrec [ pop ] dip ] [ ] cons dip [ [ ] ] [ "" ] iflist [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ ] cons dip cons ] concat step reverse [ [ 4000000 < ] [ 2 % 0 = ] [ dup ] [ dip ] cons dip [ ] cons dip [ dip ] cons dip exec and ] [ ] cons dip [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ [ ] cons dip cons ] [ pop ] ifte ] cons [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip cons ] [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec 0 [ + ] [ [ ] cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec] define
+#          [1 40 [ ] [ ] cons [ pop pop ] [ ] cons dip concat [ > ] [ ] cons dip [ [ dup 1 + ] dip ] [ cons ] linrec [ [ 1 0 ] dip [ [ ] cons dip [ + ] stack [ exec ] dip cons unstack [ pop pop ] dip ] [ pop null ] [ pop pop ] [ [ 1 - ] dip dup [ dip ] cons dip ] [ ] linrec [ pop ] dip ] [ ] cons dip [ [ ] ] [ "" ] iflist [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ ] cons dip cons ] concat [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip cons ] [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ 4000000 < ] [ 2 % 0 = ] [ dup ] [ dip ] cons dip [ ] cons dip [ dip ] cons dip exec and ] [ ] cons dip [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ [ ] cons dip cons ] [ pop ] ifte ] cons [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip cons ] [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec 0 [ + ] [ [ ] cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec] define 
+
+
+        "p002-full"
+          [ 
+            1 40 [ ] [ ] cons [ pop pop ] [ ] cons dip concat [ > ] [ ] cons 
+            dip [ [ dup 1 + ] dip ] [ cons ] linrec [ [ 1 0 ] dip [ [ ] cons 
+            dip [ + ] stack [ exec ] dip cons unstack [ pop pop ] dip ] [ pop 
+            null ] [ pop pop ] [ [ 1 - ] dip dup [ dip ] cons dip ] [ ] linrec 
+            [ pop ] dip ] [ ] cons dip [ [ ] ] [ "" ] [ list? ] [ [ ] cons 
+            cons ] dip [ ] cons dip exec ifte [ ] cons dip [ [ ] cons dip ] 
+            dip [ ] cons dip [ [ ] cons dip cons ] concat [ [ null ] dip 
+            null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] 
+            [ ] linrec [ [ ] ] [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] 
+            cons dip exec ifte [ ] cons dip [ [ ] cons dip cons ] [ [ null ] 
+            dip null or ] [ pop pop ] [ [ uncons ] dip dup [ dip ] cons dip ] 
+            [ ] linrec [ [ 4000000 < ] [ 2 % 0 = ] [ dup ] [ dip ] cons dip 
+            [ ] cons dip [ dip ] cons dip exec and ] [ ] cons dip [ [ ] ] 
+            [ "" ] [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte 
+            [ ] cons dip [ [ ] cons dip ] dip [ ] cons dip [ [ [ ] cons dip 
+            cons ] [ pop ] ifte ] cons [ [ null ] dip null or ] [ pop pop ] 
+            [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec [ [ ] ] [ "" ] 
+            [ list? ] [ [ ] cons cons ] dip [ ] cons dip exec ifte [ ] cons 
+            dip [ [ ] cons dip cons ] [ [ null ] dip null or ] [ pop pop ] 
+            [ [ uncons ] dip dup [ dip ] cons dip ] [ ] linrec 0 [ + ] [ [ ] 
+            cons dip ] dip [ [ null ] dip null or ] [ pop pop ] [ [ uncons ] 
+            dip dup [ dip ] cons dip ] [ ] linrec 
+          ] define
+
+

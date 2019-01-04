@@ -57,7 +57,17 @@ Returns 1 if N is a palindrome, otherwise 0
         {
           [5002005 is-palindrome] 1 assert
           [5002006 is-palindrome] 0 assert
-        }
-        "is-palindrome" [ show dup reverse = ] define
+          [[1 2 1] is-palindrome] 1 assert
+          [[1 2 3] is-palindrome] 0 assert
+          ["abcba" is-palindrome] 1 assert
+          ["ab"    is-palindrome] 0 assert
+          [2       is-palindrome] 1 assert
+          ["a"     is-palindrome] 1 assert
+          [""      is-palindrome] 1 assert
+          [[]      is-palindrome] 1 assert
+         }
+        "is-palindrome" 
+          [ [ number? ] [ show ] when dup reverse = 
+          ] define
 
 `"euler_utils" run-tests` to run unit test 
